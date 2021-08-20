@@ -126,6 +126,11 @@ export interface TargetDependencyConfig {
    * The name of the target
    */
   target: string;
+
+  /**
+   * Should we pass overrides down the dependencies of this project
+   */
+  forwardAllArgsToDependencies: boolean;
 }
 
 /**

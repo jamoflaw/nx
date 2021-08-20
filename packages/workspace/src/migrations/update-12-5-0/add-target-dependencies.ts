@@ -18,7 +18,11 @@ export async function setTargetDependencies(host: Tree) {
   strictlyOrderedTargets.forEach((target) => {
     if (!config.targetDependencies[target]) {
       config.targetDependencies[target] = [
-        { target, projects: 'dependencies' },
+        {
+          target,
+          projects: 'dependencies',
+          forwardAllArgsToDependencies: false,
+        },
       ];
       updatedStrictlyOrderedTargets.push(target);
     }

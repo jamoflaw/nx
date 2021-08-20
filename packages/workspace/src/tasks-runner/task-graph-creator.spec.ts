@@ -56,6 +56,7 @@ describe('TaskGraphCreator', () => {
           {
             target: 'build',
             projects: 'dependencies',
+            forwardAllArgsToDependencies: false,
           },
         ],
       }
@@ -118,6 +119,7 @@ describe('TaskGraphCreator', () => {
           {
             target: 'custom',
             projects: 'dependencies',
+            forwardAllArgsToDependencies: false,
           },
         ],
       }

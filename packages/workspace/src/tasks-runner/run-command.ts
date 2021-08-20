@@ -200,6 +200,7 @@ function addTasksForProjectTarget(
         {
           target,
           configuration,
+          overrides,
         },
         dependencyConfig,
         defaultDependencyConfigs,
@@ -257,7 +258,11 @@ export function createTask({
 
 function addTasksForProjectDependencyConfig(
   project: ProjectGraphNode,
-  { target, configuration }: Pick<TaskParams, 'target' | 'configuration'>,
+  {
+    target,
+    configuration,
+    overrides,
+  }: Pick<TaskParams, 'target' | 'configuration' | 'overrides'>,
   dependencyConfig: TargetDependencyConfig,
   defaultDependencyConfigs: Record<string, TargetDependencyConfig[]>,
   projectGraph: ProjectGraph,
@@ -294,7 +299,9 @@ function addTasksForProjectDependencyConfig(
             project: projectGraph.nodes[dep.target],
             target: dependencyConfig.target,
             configuration,
-            overrides: {},
+            overrides: dependencyConfig.forwardAllArgsToDependencies
+              ? overrides
+              : {},
             errorIfCannotFindConfiguration: false,
           },
           defaultDependencyConfigs,
@@ -310,7 +317,7 @@ function addTasksForProjectDependencyConfig(
 
         addTasksForProjectDependencyConfig(
           projectGraph.nodes[dep.target],
-          { target, configuration },
+          { target, configuration, overrides },
           dependencyConfig,
           defaultDependencyConfigs,
           projectGraph,
@@ -326,7 +333,9 @@ function addTasksForProjectDependencyConfig(
         project,
         target: dependencyConfig.target,
         configuration,
-        overrides: {},
+        overrides: dependencyConfig.forwardAllArgsToDependencies
+          ? overrides
+          : {},
         errorIfCannotFindConfiguration: true,
       },
       defaultDependencyConfigs,
@@ -455,7 +464,11 @@ function ensureTargetDependenciesBackwardCompatibility(
 
     if (!nxJson.targetDependencies[nxArgs.target]) {
       nxJson.targetDependencies[nxArgs.target] = [
-        { target: nxArgs.target, projects: 'dependencies' },
+        {
+          target: nxArgs.target,
+          projects: 'dependencies',
+          forwardAllArgsToDependencies: true,
+        },
       ];
     }
   }
