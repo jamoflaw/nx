@@ -76,7 +76,7 @@ export interface ProjectConfiguration {
   /**
    * Project's targets
    */
-  targets: { [targetName: string]: TargetConfiguration };
+  targets?: { [targetName: string]: TargetConfiguration };
 
   /**
    * Project's location relative to the root of the workspace
@@ -598,7 +598,7 @@ export function inlineProjectConfigurations(
       if (typeof config === 'string') {
         const configFilePath = path.join(root, config, 'project.json');
         const fileConfig = readJsonFile(configFilePath);
-        w.projects[project] = { ...fileConfig, configFilePath };
+        w.projects[project] = fileConfig;
       }
     }
   );

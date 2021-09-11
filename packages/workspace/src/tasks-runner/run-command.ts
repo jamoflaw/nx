@@ -228,6 +228,8 @@ export function createTask({
     process.exit(1);
   }
 
+  configuration ??= project.data.targets?.[target]?.defaultConfiguration;
+
   const config = projectHasTargetAndConfiguration(
     project,
     target,

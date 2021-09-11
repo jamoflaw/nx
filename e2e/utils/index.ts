@@ -188,6 +188,7 @@ export function newProject({ name = uniq('proj') } = {}): string {
         `@nrwl/react`,
         `@nrwl/storybook`,
         `@nrwl/web`,
+        `@nrwl/react-native`,
       ];
       packageInstall(packages.join(` `), projScope);
 
@@ -630,7 +631,6 @@ export function logSuccess(title: string, body?: string) {
 export function getPackageManagerCommand({
   path = tmpProjPath(),
   packageManager = detectPackageManager(path),
-  scriptsPrependNodePath = true,
 } = {}): {
   createWorkspace: string;
   runNx: string;
@@ -638,10 +638,6 @@ export function getPackageManagerCommand({
   addDev: string;
   list: string;
 } {
-  const scriptsPrependNodePathFlag = scriptsPrependNodePath
-    ? ' --scripts-prepend-node-path '
-    : '';
-
   const [npmMajorVersion] = execSync(`npm -v`).toString().split('.');
 
   return {
@@ -649,8 +645,8 @@ export function getPackageManagerCommand({
       createWorkspace: `npx ${
         +npmMajorVersion >= 7 ? '--yes' : ''
       } create-nx-workspace@${publishedVersion}`,
-      runNx: `npm run nx${scriptsPrependNodePathFlag} --`,
-      runNxSilent: `npm run nx --silent${scriptsPrependNodePathFlag} --`,
+      runNx: `npx nx`,
+      runNxSilent: `npx nx`,
       addDev: `npm install --legacy-peer-deps -D`,
       list: 'npm ls --depth 10',
     },
@@ -662,10 +658,11 @@ export function getPackageManagerCommand({
       addDev: `yarn add -D`,
       list: 'npm ls --depth 10',
     },
+    // Pnpm 3.5+ adds nx to
     pnpm: {
       createWorkspace: `pnpx --yes create-nx-workspace@${publishedVersion}`,
-      runNx: `pnpm run nx --`,
-      runNxSilent: `pnpm run nx --silent --`,
+      runNx: `pnpx nx`,
+      runNxSilent: `pnpx nx`,
       addDev: `pnpm add -D`,
       list: 'npm ls --depth 10',
     },
